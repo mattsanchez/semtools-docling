@@ -3,16 +3,15 @@ use clap::Parser;
 use std::path::Path;
 
 use semtools::{
-    DoclingBackend, DoclingConfig, DoclingServeBackend, DoclingServeConfig, LlamaParseBackend,
-    LlamaParseConfig,
+    DoclingBackend, DoclingServeBackend, LlamaParseBackend, SemtoolsConfig,
 };
 
 #[derive(Parser, Debug)]
 #[command(version, about = "A CLI tool for parsing documents using various backends", long_about = None)]
 struct Args {
-    /// Path to the config file. Defaults to ~/.parse_config.json
+    /// Path to the config file. Defaults to ~/.semtools_config.json
     #[clap(short = 'c', long)]
-    parse_config: Option<String>,
+    config: Option<String>,
 
     /// The backend type to use for parsing. Defaults to `docling-serve`
     #[clap(short, long, default_value = "docling-serve")]
@@ -32,18 +31,12 @@ async fn main() -> Result<()> {
     let args = Args::parse();
 
     // Get config file path
-    let config_path = args.parse_config.unwrap_or_else(|| {
-        let config_name = match args.backend.as_str() {
-            "docling" => ".docling_config.json",
-            "docling-serve" => ".docling_serve_config.json",
-            _ => ".parse_config.json",
-        };
-        dirs::home_dir()
-            .unwrap()
-            .join(config_name)
-            .to_string_lossy()
-            .to_string()
-    });
+    let config_path = args
+        .config
+        .unwrap_or_else(SemtoolsConfig::default_config_path);
+
+    // Load unified configuration
+    let semtools_config = SemtoolsConfig::from_config_file(&config_path)?;
 
     // Validate that files exist
     for file in &args.files {
@@ -55,8 +48,8 @@ async fn main() -> Result<()> {
     // Create backend and process files
     match args.backend.as_str() {
         "llama-parse" => {
-            let config = LlamaParseConfig::from_config_file(&config_path)?;
-            let backend = LlamaParseBackend::new(config, args.verbose)?;
+            let parse_config = semtools_config.llama_parse.unwrap_or_default();
+            let backend = LlamaParseBackend::new(parse_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 
             // Output the paths to parsed files, one per line
@@ -65,8 +58,8 @@ async fn main() -> Result<()> {
             }
         }
         "docling" => {
-            let config = DoclingConfig::from_config_file(&config_path)?;
-            let backend = DoclingBackend::new(config, args.verbose)?;
+            let docling_config = semtools_config.docling.unwrap_or_default();
+            let backend = DoclingBackend::new(docling_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 
             // Output the paths to parsed files, one per line
@@ -75,8 +68,8 @@ async fn main() -> Result<()> {
             }
         }
         "docling-serve" => {
-            let config = DoclingServeConfig::from_config_file(&config_path)?;
-            let backend = DoclingServeBackend::new(config, args.verbose)?;
+            let docling_serve_config = semtools_config.docling_serve.unwrap_or_default();
+            let backend = DoclingServeBackend::new(docling_serve_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 
             // Output the paths to parsed files, one per line

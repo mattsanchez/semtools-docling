@@ -3,15 +3,25 @@ use std::fs;
 use std::path::Path;
 
 #[cfg(feature = "parse")]
-use crate::parse::LlamaParseConfig;
+use crate::parse::{DoclingConfig, DoclingServeConfig, LlamaParseConfig};
 
 /// Unified configuration for all semtools CLI tools
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct SemtoolsConfig {
-    /// Configuration for the parse CLI tool
+    /// Configuration for LlamaParse backend
     #[cfg(feature = "parse")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parse: Option<LlamaParseConfig>,
+    pub llama_parse: Option<LlamaParseConfig>,
+
+    /// Configuration for Docling backend
+    #[cfg(feature = "parse")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub docling: Option<DoclingConfig>,
+
+    /// Configuration for Docling Serve backend
+    #[cfg(feature = "parse")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub docling_serve: Option<DoclingServeConfig>,
 
     /// Configuration for the ask CLI tool
     #[cfg(feature = "ask")]

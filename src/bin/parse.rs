@@ -14,8 +14,8 @@ struct Args {
     #[clap(short = 'c', long)]
     parse_config: Option<String>,
 
-    /// The backend type to use for parsing. Defaults to `llama-parse`
-    #[clap(short, long, default_value = "llama-parse")]
+    /// The backend type to use for parsing. Defaults to `docling-serve`
+    #[clap(short, long, default_value = "docling-serve")]
     backend: String,
 
     /// Files to parse

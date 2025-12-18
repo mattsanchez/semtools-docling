@@ -136,7 +136,7 @@ Arguments:
   <FILES>...  Files to parse
 
 Options:
-  -c, --config <CONFIG>    Path to the config file. Defaults to ~/.semtools_config.json
+  -c, --config <CONFIG>    Path to the config file. Defaults to .semtools_config.json in current directory, then ~/.semtools_config.json
   -b, --backend <BACKEND>  The backend type to use for parsing. Defaults to `llama-parse` [default: llama-parse]
   -v, --verbose            Verbose output while parsing
   -h, --help               Print help
@@ -190,7 +190,7 @@ Arguments:
   [FILES]...  Files to search, optional if using stdin
 
 Options:
-  -c, --config <CONFIG>      Path to the config file. Defaults to ~/.semtools_config.json
+  -c, --config <CONFIG>      Path to the config file. Defaults to .semtools_config.json in current directory, then ~/.semtools_config.json
       --api-key <API_KEY>    OpenAI API key (overrides config file and env var)
       --base-url <BASE_URL>  OpenAI base URL (overrides config file)
   -m, --model <MODEL>        Model to use for the agent (overrides config file)
@@ -200,11 +200,16 @@ Options:
 
 ## Configuration
 
-SemTools uses a unified configuration file at `~/.semtools_config.json` that contains settings for all CLI tools. You can also specify a custom config file path using the `-c` or `--config` flag on any command.
+SemTools uses a unified configuration file named `.semtools_config.json` that contains settings for all CLI tools. By default, SemTools will:
+
+1. First look for `.semtools_config.json` in your current working directory
+2. Fall back to `~/.semtools_config.json` in your home directory
+
+You can also specify a custom config file path using the `-c` or `--config` flag on any command.
 
 ### Unified Configuration File
 
-Create a `~/.semtools_config.json` file with settings for the tools you use. All sections are optional - if not specified, sensible defaults will be used.
+Create a `.semtools_config.json` file (either in your project directory or home directory) with settings for the tools you use. All sections are optional - if not specified, sensible defaults will be used.
 
 ```json
 {
@@ -255,7 +260,7 @@ export OPENAI_API_KEY="your_openai_api_key_here"
 Configuration values are resolved in the following priority order (highest to lowest):
 
 1. **CLI arguments** (e.g., `--api-key`, `--model`, `--base-url`)
-2. **Config file** (`~/.semtools_config.json` or custom path via `-c`)
+2. **Config file** (`.semtools_config.json` in current directory, then `~/.semtools_config.json`, or custom path via `-c`)
 3. **Environment variables** (`LLAMA_CLOUD_API_KEY`, `OPENAI_API_KEY`)
 4. **Built-in defaults**
 

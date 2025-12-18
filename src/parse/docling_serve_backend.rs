@@ -31,10 +31,14 @@ pub struct DoclingServeBackend {
 }
 
 impl DoclingServeBackend {
-    pub fn new(config:    DoclingServeConfig, verbose: bool) -> anyhow::Result<Self> {
-        let cache_dir = dirs::home_dir()
-            .ok_or_else(|| anyhow::Error::msg("Could not find home directory"))?
-            .join(".parse");
+    pub fn new(config: DoclingServeConfig, verbose: bool) -> anyhow::Result<Self> {
+        let cache_dir = if let Some(ref custom_output_dir) = config.output_dir {
+            std::path::PathBuf::from(custom_output_dir)
+        } else {
+            dirs::home_dir()
+                .ok_or_else(|| anyhow::Error::msg("Could not find home directory"))?
+                .join(".parse")
+        };
 
         fs::create_dir_all(&cache_dir)?;
 

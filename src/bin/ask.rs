@@ -21,7 +21,7 @@ struct Args {
     #[arg(help = "Files to search, optional if using stdin")]
     files: Vec<String>,
 
-    /// Path to the config file. Defaults to ~/.semtools_config.json
+    /// Path to the config file. Defaults to .semtools_config.json in current directory, then ~/.semtools_config.json
     #[clap(short = 'c', long)]
     config: Option<String>,
 

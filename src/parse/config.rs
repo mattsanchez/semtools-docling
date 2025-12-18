@@ -14,6 +14,7 @@ pub struct LlamaParseConfig {
     pub max_retries: usize,
     pub retry_delay_ms: u64,
     pub backoff_multiplier: f64,
+    pub output_dir: Option<String>,
 }
 
 impl Default for LlamaParseConfig {
@@ -38,6 +39,7 @@ impl Default for LlamaParseConfig {
             max_retries: 10,
             retry_delay_ms: 1000,
             backoff_multiplier: 2.0,
+            output_dir: None,
         }
     }
 }

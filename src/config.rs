@@ -85,8 +85,22 @@ impl SemtoolsConfig {
         Ok(config)
     }
 
-    /// Get the default config file path (~/.semtools_config.json)
+    /// Get the default config file path
+    /// First checks for .semtools_config.json in the current directory,
+    /// then falls back to ~/.semtools_config.json in the home directory
     pub fn default_config_path() -> String {
+        let cwd_config = std::env::current_dir()
+            .ok()
+            .map(|p| p.join(".semtools_config.json"));
+
+        // Check if config exists in current directory
+        if let Some(ref path) = cwd_config {
+            if path.exists() {
+                return path.to_string_lossy().to_string();
+            }
+        }
+
+        // Fall back to home directory
         dirs::home_dir()
             .unwrap()
             .join(".semtools_config.json")

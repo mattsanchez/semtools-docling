@@ -16,8 +16,8 @@ pub struct DoclingBackend {
 
 impl DoclingBackend {
     pub fn new(config: DoclingConfig, verbose: bool) -> anyhow::Result<Self> {
-        let cache_dir = if let Some(ref custom_cache_dir) = config.cache_dir {
-            std::path::PathBuf::from(custom_cache_dir)
+        let cache_dir = if let Some(ref custom_output_dir) = config.output_dir {
+            std::path::PathBuf::from(custom_output_dir)
         } else {
             dirs::home_dir()
                 .ok_or_else(|| anyhow::Error::msg("Could not find home directory"))?

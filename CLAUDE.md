@@ -47,9 +47,10 @@ npm install
 
 ### Core Structure
 - **Dual binary system**: Two separate CLI tools (`parse` and `search`) with optional features
-- **src/bin/**: Contains main CLI entry points (parse.rs, search.rs)  
+- **src/bin/**: Contains main CLI entry points (parse.rs, search.rs)
+- **src/config.rs**: Unified configuration management for .semtools_config.json (checks current dir, then home dir)
 - **src/parse/**: Parse tool implementation with LlamaIndex API integration
-  - `config.rs` - Configuration management for ~/.parse_config.json
+  - `config.rs` - LlamaParse-specific configuration
   - `client.rs` - HTTP client for LlamaIndex API
   - `cache.rs` - File-based caching system using SHA-2 hashing
   - `backend.rs` - LlamaParseBackend trait implementation
@@ -62,7 +63,9 @@ npm install
 - **Common**: anyhow (error handling), clap (CLI parsing)
 
 ### Configuration
-- Parse tool looks for `~/.parse_config.json` or `LLAMA_CLOUD_API_KEY` env var
+
+- Tools look for `.semtools_config.json` in current directory first, then `~/.semtools_config.json`
+- Environment variables: `LLAMA_CLOUD_API_KEY`, `OPENAI_API_KEY`
 - Default embedding model: minishlab/potion-multilingual-128M (model2vec)
 - Concurrent parsing with configurable request limits and retry logic
 

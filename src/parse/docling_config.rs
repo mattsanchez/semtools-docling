@@ -11,20 +11,20 @@ pub struct DoclingConfig {
     pub extra_args: Vec<String>,
     pub enable_tables: bool,
     pub enable_images: bool,
-    pub cache_dir: Option<String>,
+    pub output_dir: Option<String>,
 }
 
 impl Default for DoclingConfig {
     fn default() -> Self {
         Self {
-            use_ocr: true,
+            use_ocr: false,
             vlm_model: None, // Can be "smoldocling" or other VLM models
             output_format: "md".to_string(), // Default to markdown
             python_path: None, // Use system Python by default
             extra_args: Vec::new(),
             enable_tables: true,
             enable_images: true,
-            cache_dir: None, // Use default cache directory
+            output_dir: None, // Use default output directory (~/.parse)
         }
     }
 }

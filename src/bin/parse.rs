@@ -9,7 +9,7 @@ use semtools::{
 #[derive(Parser, Debug)]
 #[command(version, about = "A CLI tool for parsing documents using various backends", long_about = None)]
 struct Args {
-    /// Path to the config file. Defaults to ~/.semtools_config.json
+    /// Path to the config file. Defaults to .semtools_config.json in current directory, then ~/.semtools_config.json
     #[clap(short = 'c', long)]
     config: Option<String>,
 
@@ -24,6 +24,10 @@ struct Args {
     /// Verbose output while parsing
     #[clap(short, long)]
     verbose: bool,
+
+    /// Output directory for parsed documents. Defaults to ~/.parse
+    #[clap(short = 'o', long)]
+    output_dir: Option<String>,
 }
 
 #[tokio::main]
@@ -48,7 +52,11 @@ async fn main() -> Result<()> {
     // Create backend and process files
     match args.backend.as_str() {
         "llama-parse" => {
-            let parse_config = semtools_config.llama_parse.unwrap_or_default();
+            let mut parse_config = semtools_config.llama_parse.unwrap_or_default();
+            // Override output_dir from CLI if provided
+            if let Some(ref output_dir) = args.output_dir {
+                parse_config.output_dir = Some(output_dir.clone());
+            }
             let backend = LlamaParseBackend::new(parse_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 
@@ -58,7 +66,11 @@ async fn main() -> Result<()> {
             }
         }
         "docling" => {
-            let docling_config = semtools_config.docling.unwrap_or_default();
+            let mut docling_config = semtools_config.docling.unwrap_or_default();
+            // Override output_dir from CLI if provided
+            if let Some(ref output_dir) = args.output_dir {
+                docling_config.output_dir = Some(output_dir.clone());
+            }
             let backend = DoclingBackend::new(docling_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 
@@ -68,7 +80,11 @@ async fn main() -> Result<()> {
             }
         }
         "docling-serve" => {
-            let docling_serve_config = semtools_config.docling_serve.unwrap_or_default();
+            let mut docling_serve_config = semtools_config.docling_serve.unwrap_or_default();
+            // Override output_dir from CLI if provided
+            if let Some(ref output_dir) = args.output_dir {
+                docling_serve_config.output_dir = Some(output_dir.clone());
+            }
             let backend = DoclingServeBackend::new(docling_serve_config, args.verbose)?;
             let results = backend.parse(args.files).await?;
 

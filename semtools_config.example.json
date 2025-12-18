@@ -1,0 +1,31 @@
+{
+  "docling_serve": {
+    "base_url": "http://localhost:15001",
+    "api_key": null,
+    "use_ocr": true,
+    "force_ocr": false,
+    "ocr_engine": "easyocr",
+    "ocr_languages": [],
+    "pdf_backend": "dlparse_v4",
+    "table_mode": "accurate",
+    "enable_table_structure": true,
+    "table_cell_matching": true,
+    "include_images": true,
+    "image_scale": 2.0,
+    "image_export_mode": "embedded",
+    "do_code_enrichment": false,
+    "do_formula_enrichment": false,
+    "do_picture_classification": false,
+    "do_picture_description": false,
+    "processing_pipeline": "standard",
+    "document_timeout": 604800.0,
+    "abort_on_error": false,
+    "use_async": false,
+    "poll_interval": 5,
+    "max_poll_attempts": 60,
+    "to_formats": ["md"],
+    "from_formats": ["docx", "pptx", "html", "image", "pdf", "asciidoc", "md"],
+    "page_range": null,
+    "md_page_break_placeholder": ""
+  }
+}
